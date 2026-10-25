@@ -4,6 +4,8 @@ import ma.ebank.app.ebankservice.entities.BankAccount;
 import ma.ebank.app.ebankservice.feign.CustomerRestClient;
 import ma.ebank.app.ebankservice.model.Customer;
 import ma.ebank.app.ebankservice.repository.BankAccountRepository;
+import org.springframework.ai.mcp.annotation.McpTool;
+import org.springframework.ai.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +26,20 @@ public class BankAccountServiceImpl implements BankAccountService {
 
 
     @Override
+    @McpTool(description = "get all Bank account")
     public List<BankAccount> getBankAccounts() {
         return bankAccountRepository.findAll();
     }
 
     @Override
+    @McpTool(description = "")
     public List<BankAccount> findByCustomerId(Long customerId) {
         return bankAccountRepository.findByCustomerId(customerId);
     }
 
     @Override
-    public BankAccount getBankAccountById(String bankAccountId) {
+    @McpTool(description = "Get a Bank account by id ")
+    public BankAccount getBankAccountById(@McpToolParam(description = "bank account id") String bankAccountId) {
           BankAccount bankAccount = bankAccountRepository.findById(bankAccountId)
                 .orElseThrow(() -> new RuntimeException("Account not found!") );
            bankAccount.setCustomer(
@@ -43,7 +48,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccount saveBankAccount(BankAccount bankAccount) {
+    @McpTool(description = "save Bank Account")
+    public BankAccount saveBankAccount(@McpToolParam(description = "bank account to save (balance , type , customer id )") BankAccount bankAccount) {
          try{
              Customer customer = customerRestClient.getCustomerById(bankAccount.getCustomerId());
              bankAccount.setId(UUID.randomUUID().toString());

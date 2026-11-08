@@ -1,28 +1,34 @@
 import { Component, inject } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {AsyncPipe} from '@angular/common';
-import {AccountListState, Account, RequestStatus} from './model/account.model';
-import {catchError, map, Observable, of} from 'rxjs';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { BehaviorSubject, catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
+import { AccountListState, RequestStatus } from '../model/account.model';
+import { AccountService } from '../services/account.service';
 
 @Component({
-  imports: [
-    AsyncPipe
-  ],
+  imports: [AsyncPipe, DatePipe, CurrencyPipe, RouterLink],
   selector: 'app-accounts',
   styleUrl: './accounts.css',
   templateUrl: './accounts.html',
 })
 export class Accounts {
-  private http = inject(HttpClient);
+  private accountService = inject(AccountService);
+  private refresh$ = new BehaviorSubject<void>(undefined);
+  protected readonly RequestStatus = RequestStatus;
 
-  accouts$: Observable<AccountListState> = this.http.get<Account[]>
-  ("http://localhost:9999/EBANK-SERVICE/accounts").pipe(
-    map(value => {
-      return {accounts:value , status:RequestStatus.SUCCESS};
-    }),
-    catchError((error, caught) => {
-      return of({status: RequestStatus.ERROR , errorMessage: error.statusText});
-    })
-  )
+  accounts$: Observable<AccountListState> = this.refresh$.pipe(
+    switchMap(() =>
+      this.accountService.getAccounts().pipe(
+        map((accounts) => ({ accounts, status: RequestStatus.SUCCESS })),
+        startWith({ status: RequestStatus.LOADING }),
+        catchError((error) =>
+          of({ status: RequestStatus.ERROR, errorMessage: error.message || error.statusText }),
+        ),
+      ),
+    ),
+  );
 
+  reload() {
+    this.refresh$.next();
+  }
 }

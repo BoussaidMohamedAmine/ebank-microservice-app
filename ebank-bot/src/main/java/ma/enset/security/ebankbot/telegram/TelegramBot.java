@@ -7,6 +7,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.content.Media;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@ConditionalOnExpression("!'${telegram.token:}'.isBlank()")
 public class TelegramBot extends TelegramLongPollingBot {
 
     @Value("${telegram.token}")

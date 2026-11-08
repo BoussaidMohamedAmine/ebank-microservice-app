@@ -1,0 +1,9 @@
+.chat-body {
+  height: 60vh;
+  overflow-y: auto;
+}
+
+.chat-msg {
+  max-width: 75%;
+  white-space: pre-wrap;
+}

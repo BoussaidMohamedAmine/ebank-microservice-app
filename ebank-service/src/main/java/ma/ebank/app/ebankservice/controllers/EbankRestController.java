@@ -27,7 +27,7 @@ public class EbankRestController {
     }
 
     @GetMapping("/accounts/customer/{id}")
-    public List<BankAccount> getBankAccountByCustomerId(@PathVariable Long customerId) {
+    public List<BankAccount> getBankAccountByCustomerId(@PathVariable("id") Long customerId) {
         return this.bankAccountService.findByCustomerId(customerId);
     }
 

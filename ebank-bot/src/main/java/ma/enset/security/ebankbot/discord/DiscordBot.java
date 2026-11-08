@@ -6,8 +6,10 @@ import ma.enset.security.ebankbot.agents.EbankAiAgent;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.context.annotation.Profile;
 
 @DiscordController
+@Profile("discord")
 public class DiscordBot {
 
     private EbankAiAgent ebankAiAgent;

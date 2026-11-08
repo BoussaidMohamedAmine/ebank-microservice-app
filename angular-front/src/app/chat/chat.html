@@ -1,0 +1,31 @@
+<div class="container p-3">
+  <div class="card">
+    <div class="card-header"><i class="bi bi-robot"></i> Ebank Assistant</div>
+    <div class="card-body chat-body">
+      @for (msg of messages(); track $index) {
+        <div class="d-flex mb-2" [class.justify-content-end]="msg.from === 'user'">
+          <div class="p-2 rounded chat-msg"
+               [class.bg-primary]="msg.from === 'user'"
+               [class.text-white]="msg.from === 'user'"
+               [class.bg-light]="msg.from === 'bot'">
+            {{ msg.content }}
+          </div>
+        </div>
+      } @empty {
+        <p class="text-muted">Ask me something, e.g. "Show me the accounts of customer 1".</p>
+      }
+      @if (loading()) {
+        <div class="spinner-grow spinner-grow-sm text-secondary"></div>
+      }
+    </div>
+    <div class="card-footer">
+      <form class="d-flex" (ngSubmit)="send()">
+        <input class="form-control me-2" name="query" [(ngModel)]="query"
+               placeholder="Your question..." [disabled]="loading()" />
+        <button class="btn btn-primary" type="submit" [disabled]="loading()">
+          <i class="bi bi-send"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
